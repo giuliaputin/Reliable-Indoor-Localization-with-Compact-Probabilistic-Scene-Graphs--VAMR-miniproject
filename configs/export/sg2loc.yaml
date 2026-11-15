@@ -1,0 +1,99 @@
+# Hydra -> SG2Loc 3RScan-compatible export configuration (WP1).
+# All relative paths are resolved from the repository root.
+
+paths:
+  maps_dir: data/maps                       # <map_seq>/backend/{dsg_with_mesh.json,mesh.ply}
+  raw_rio10_dir: data/raw/rio10             # mapping/<seq> and query/<seq>
+  export_dir: data/exports/sg2loc           # SG2Loc root (contains scenes/ and files/)
+  sg2loc_repo: third_party/sg2loc           # Path to SG2Loc repository
+  ade20k_label_space: /home/aina/hydra_ws/src/hydra/config/label_spaces/ade20k_full_label_space.yaml
+
+extraction:
+  floor_ade20k_label: 3                     # ADE20k 'floor' -> SG2Loc objectId = 1
+  min_obj_vertices: 20                      # Discard tiny fragmented object meshes
+
+bvh:
+  dir_name: bvh_trees_0.5
+  max_triangles_per_leaf: 8
+
+scene_graph:
+  pc_resolutions: [64, 128, 256, 512]       # Multi-resolution FPS object point clouds
+  default_nyu40_id: 39                      # Fallback: 'otherfurniture'
+  vertical_thresh_m: 0.45                   # above / below
+  cardinal_max_dist_m: 2.5                  # left / right / front / behind
+  close_by_max_dist_m: 3.5                  # close_by vs. none
+
+visual_embeddings:
+  dir_name: Features3D/obj_dinov2_top10_l3
+  model_name: dinov2_vitg14
+  desc_layer: 31
+  desc_facet: value
+  topk_views: 10
+  frame_subsample_step: 5
+  crop_levels: 3
+  crop_expansion_ratio: 0.2
+  rotate_270: true                          # Match SG2Loc's rotated frame convention
+
+ade20k_to_nyu40:
+  wall: 1
+  floor: 2
+  cabinet: 3
+  wardrobe: 3
+  bed: 4
+  chair: 5
+  armchair: 5
+  swivel chair: 5
+  sofa: 6
+  table: 7
+  coffee table: 7
+  door: 8
+  windowpane: 9
+  window: 9
+  bookcase: 10
+  bookshelf: 10
+  picture: 11
+  painting: 11
+  counter: 12
+  countertop: 12
+  blind: 13
+  blinds: 13
+  desk: 14
+  shelf: 15
+  curtain: 16
+  chest of drawers: 17
+  dresser: 17
+  pillow: 18
+  cushion: 18
+  blanket: 18
+  mirror: 19
+  rug: 20
+  mat: 20
+  clothes: 21
+  apparel: 21
+  ceiling: 22
+  book: 23
+  refrigerator: 24
+  television: 25
+  tv: 25
+  monitor: 25
+  paper: 26
+  towel: 27
+  shower curtain: 28
+  box: 29
+  basket: 29
+  bin: 29
+  whiteboard: 30
+  person: 31
+  nightstand: 32
+  toilet: 33
+  sink: 34
+  lamp: 35
+  light: 35
+  bathtub: 36
+  bag: 37
+  backpack: 37
+  radiator: 39
+  washer: 39
+  dishwasher: 39
+  oven: 39
+  stove: 39

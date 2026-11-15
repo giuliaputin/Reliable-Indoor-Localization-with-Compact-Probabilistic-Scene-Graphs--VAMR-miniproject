@@ -1,20 +1,25 @@
-# RIO10 dataset configuration.
+# RIO10 dataset configuration (verified against scene01).
 # Paths are relative to the repository root.
 root: data/raw/rio10
-mapping_dir: data/raw/rio10/mapping   # reference recordings → Hydra maps
-query_dir: data/raw/rio10/query       # held-out recordings → RGB localization queries
+mapping_dir: data/raw/rio10/mapping   # reference recordings -> Hydra maps
+query_dir: data/raw/rio10/query       # held-out recordings -> RGB localization queries
 
-# Scenes used in WP1 (start small)
 scenes:
   - id: scene01
     mapping: [seq01_01]
-    query: [seq01_02]      # validation sequence with GT (test GT is held out by benchmark)
+    query: [seq01_02]                 # validation sequence with GT (test GT is held out)
 
-# TODO (WP1 step 3): fill in after inspecting downloaded data
 camera:
-  intrinsics_source: per-sequence camera file   # verify file name/format
-  depth_scale: null       # e.g. 1000.0 if depth stored in mm
-  depth_type: rendered    # RIO10 provides rendered depth, verify
+  intrinsics_source: camera.yaml      # per-sequence YAML inside each sequence folder
+  width: 540
+  height: 960
+  fx: 756.02630615
+  fy: 756.83215332
+  cx: 270.41879272
+  cy: 492.88940430
+  depth_scale: 1000.0                 # uint16 millimeters in frame-XXXXXX.rendered.depth.png
+  depth_type: rendered                # rendered Z-depth from reconstructed mesh
+
 pose:
-  convention: null        # camera-to-world vs world-to-camera, verify
+  convention: camera-to-world         # 4x4 T_world_cam matrix per frame (frame-XXXXXX.pose.txt)
   format: 4x4 matrix per frame
