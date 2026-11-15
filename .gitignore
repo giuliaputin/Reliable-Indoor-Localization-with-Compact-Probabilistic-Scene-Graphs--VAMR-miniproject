@@ -1,0 +1,48 @@
+# --- Claude Code / editor ---
+.claude/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Data (never commit datasets, maps or exports; keep folder skeleton) ---
+data/**
+!data/**/
+!data/README.md
+!data/**/.gitkeep
+
+# --- Outputs / results ---
+outputs/**
+!outputs/.gitkeep
+*.bag
+*.db3
+*.mcap
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- ROS / colcon / catkin workspaces ---
+ws/
+install/
+log/
+devel/
+logs/
+
+# --- Model weights ---
+*.pth
+*.pt
+*.onnx
+*.ckpt

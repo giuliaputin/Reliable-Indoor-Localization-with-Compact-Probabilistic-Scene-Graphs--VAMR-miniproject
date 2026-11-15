@@ -1,0 +1,29 @@
+services:
+  hydra:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: jazzy
+        HYDRA_ROS_REF: main
+    image: vamr/hydra:latest
+    stdin_open: true
+    tty: true
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-}
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - ../../data:/project/data
+      - ../../configs:/project/configs
+      - ../../scripts:/project/scripts
+      - ../../outputs:/project/outputs
+      - /tmp/.X11-unix:/tmp/.X11-unix          # WSLg / X11 for RViz
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

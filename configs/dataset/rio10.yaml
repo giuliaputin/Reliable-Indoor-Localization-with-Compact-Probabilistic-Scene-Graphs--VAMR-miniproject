@@ -1,0 +1,20 @@
+# RIO10 dataset configuration.
+# Paths are relative to the repository root.
+root: data/raw/rio10
+mapping_dir: data/raw/rio10/mapping   # reference recordings → Hydra maps
+query_dir: data/raw/rio10/query       # held-out recordings → RGB localization queries
+
+# Scenes used in WP1 (start small)
+scenes:
+  - id: scene01
+    mapping: [seq01_01]
+    query: [seq01_02]      # validation sequence with GT (test GT is held out by benchmark)
+
+# TODO (WP1 step 3): fill in after inspecting downloaded data
+camera:
+  intrinsics_source: per-sequence camera file   # verify file name/format
+  depth_scale: null       # e.g. 1000.0 if depth stored in mm
+  depth_type: rendered    # RIO10 provides rendered depth, verify
+pose:
+  convention: null        # camera-to-world vs world-to-camera, verify
+  format: 4x4 matrix per frame
