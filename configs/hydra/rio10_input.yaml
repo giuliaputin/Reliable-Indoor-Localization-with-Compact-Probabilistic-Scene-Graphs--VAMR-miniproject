@@ -1,0 +1,14 @@
+# Hydra-ROS input config for RIO10 (passed as input_config_path).
+# One RGB-D camera "camera"; GT poses come in via TF (world -> rio10_body -> rio10_camera).
+input:
+  type: RosInput
+  tf_verbosity: 1
+  clear_queue_on_fail: true
+  inputs:
+    camera:
+      receiver: {type: ClosedSetImageReceiver, queue_size: 100}
+      sensor:
+        type: camera_info
+        min_range: 0.1
+        max_range: 4.0   # RIO10 rendered depth rarely exceeds ~3 m
+        extrinsics: {type: ros, robot_frame: rio10_body}

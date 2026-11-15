@@ -1,20 +1,28 @@
-# RIO10 dataset configuration.
-# Paths are relative to the repository root.
+# RIO10 dataset configuration (values verified on scene01, 2026-11-15).
+# Host path: data/raw/rio10  ==  /root/data inside the hydra-dev container.
 root: data/raw/rio10
-mapping_dir: data/raw/rio10/mapping   # reference recordings → Hydra maps
-query_dir: data/raw/rio10/query       # held-out recordings → RGB localization queries
+container_root: /root/data
+# Sequences are used where they were extracted (not moved into mapping/ query/):
+sequence_dir: "{root}/scene{scene}/extracted/seq{scene}/seq{scene}_{seq}"   # e.g. scene01/extracted/seq01/seq01_01
 
-# Scenes used in WP1 (start small)
 scenes:
   - id: scene01
-    mapping: [seq01_01]
-    query: [seq01_02]      # validation sequence with GT (test GT is held out by benchmark)
+    mapping: [seq01_01]        # training sequence, GT poses (4380 frames)
+    query: [seq01_02]          # validation sequence, GT poses (2069 frames); also mapped for comparison
+    test: [seq01_03, seq01_04, seq01_05, seq01_06]   # no poses (benchmark GT held out)
 
-# TODO (WP1 step 3): fill in after inspecting downloaded data
 camera:
-  intrinsics_source: per-sequence camera file   # verify file name/format
-  depth_scale: null       # e.g. 1000.0 if depth stored in mm
-  depth_type: rendered    # RIO10 provides rendered depth, verify
+  intrinsics_source: camera.yaml   # per sequence; same values in configs/dataset/intrinsics.txt
+  width: 540                       # portrait images: 960 rows x 540 cols
+  height: 960
+  intrinsics_seq01_01: [756.026, 756.832, 270.419, 492.889]   # fx fy cx cy
+  distortion: 3 coefficients in camera.yaml (|k| < 0.04), ignored for Hydra (depth is a pinhole render)
+  depth_file: frame-XXXXXX.rendered.depth.png
+  depth_scale: 1000.0              # uint16 millimetres -> metres
+  depth_type: rendered             # rendered from the 3RScan mesh, aligned to the color image
 pose:
-  convention: null        # camera-to-world vs world-to-camera, verify
+  file: frame-XXXXXX.pose.txt
+  convention: camera_to_world      # T_world_cam, camera optical frame (x right, y down, z forward)
+  world_up: +z                     # verified: mean camera up-vector ~ +z, camera heights 0.7-2.0 m
   format: 4x4 matrix per frame
+timestamps: none                   # rio10_to_hydra.py stamps frames at a fixed --fps (default 10)

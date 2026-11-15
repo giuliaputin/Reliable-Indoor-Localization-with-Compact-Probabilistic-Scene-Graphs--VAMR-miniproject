@@ -1,0 +1,45 @@
+---
+# Hydra on a RIO10 bag (written by scripts/rio10_to_hydra.py, labels added by
+# semantic_inference closed_set_rosbag_writer). Mirrors upstream hydra_ros
+# launch/datasets/uhumans2.launch.yaml. Play the bag separately with `--clock`.
+launch:
+  - arg: {name: config_dir, description: Directory holding rio10.yaml and rio10_input.yaml}
+  - arg: {name: log_path, description: Output directory for the scene graph and mesh}
+  - arg: {name: labelspace, default: ade20k_mp3d}
+  - arg: {name: start_visualizer, default: 'false'}
+  - set_parameter: {name: use_sim_time, value: 'true'}
+  # Hydra input topics -> bag topics
+  - set_remap: {from: hydra/input/camera/depth_registered/image_rect, to: /rio10/camera/depth/image_raw}
+  - set_remap: {from: hydra/input/camera/rgb/image_raw, to: /rio10/camera/color/image_raw}
+  - set_remap: {from: hydra/input/camera/rgb/camera_info, to: /rio10/camera/color/camera_info}
+  - set_remap: {from: hydra/input/camera/camera_info, to: /rio10/camera/color/camera_info}
+  - set_remap: {from: hydra/input/camera/semantic/image_raw, to: /rio10/camera/semantic/image_raw}
+  # Map raw ADE20K labels (from the bag) to the Hydra label space
+  - group:
+      - push_ros_namespace: {namespace: rio10/camera}
+      - include:
+          file: $(find-pkg-share semantic_inference_ros)/launch/closed_set.launch.yaml
+          arg:
+            - {name: use_prerecorded, value: 'true'}
+            - {name: labelspace_name, value: $(var labelspace)}
+            - {name: max_image_queue_size, value: '100'}
+  - include:
+      file: $(find-pkg-share hydra_ros)/launch/hydra.launch.yaml
+      arg:
+        - {name: use_sim_time, value: 'true'}
+        - {name: dataset, value: rio10}
+        - {name: labelspace, value: $(var labelspace)}
+        - {name: hydra_config_path, value: $(var config_dir)/rio10.yaml}
+        - {name: input_config_path, value: $(var config_dir)/rio10_input.yaml}
+        - {name: sensor_frame, value: rio10_camera}
+        - {name: robot_frame, value: rio10_body}
+        - {name: odom_frame, value: world}
+        - {name: map_frame, value: map}
+        - {name: log_path, value: $(var log_path)}
+        - {name: exit_after_clock, value: 'true'}
+        - {name: start_visualizer, value: $(var start_visualizer)}
+  - node:
+      pkg: tf2_ros
+      name: world_to_map
+      exec: static_transform_publisher
+      args: --frame-id world --child-frame-id map
