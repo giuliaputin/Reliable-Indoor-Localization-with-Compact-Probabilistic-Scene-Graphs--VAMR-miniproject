@@ -36,7 +36,7 @@ bash scripts/export_to_sg2loc.sh seq01_01 seq01_02
 
 # Inspect exported tensors, save 2D view contact sheet, and open 3D BVH/scene-graph viewer
 ~/sg2loc_env/bin/python3 scripts/inspect_sg2loc_export.py --map-seq seq01_01 --gui
-
+```
 ---
 
 ### 12. `README.md` & Editable Install Verification
@@ -44,6 +44,7 @@ bash scripts/export_to_sg2loc.sh seq01_01 seq01_02
 ```bash
 cat << 'EOF' > README.md
 # Reliable Indoor Localization with Compact Probabilistic Scene Graphs
+```
 
 Objects reconstructed from the same camera poses can share geometric errors.
 If localization ignores these dependencies, its estimates can be overconfident.
@@ -89,6 +90,7 @@ bash scripts/export_to_sg2loc.sh seq01_01 seq01_02
 
 # 3. Inspect exported scene graph, 2D DINOv2 projections, and 3D BVH mesh
 python3 scripts/inspect_sg2loc_export.py --map-seq seq01_01 --gui
+```
 
 For full details on the Hydra -> SG2Loc schema translation, environment setup, and data links, see docs/WP1_hydra_to_sg2loc.md.
 
